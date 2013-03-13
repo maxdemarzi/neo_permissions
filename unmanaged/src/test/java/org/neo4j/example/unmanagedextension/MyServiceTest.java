@@ -117,6 +117,14 @@ public class MyServiceTest {
         assertEquals(new HashSet<String>(Arrays.asList("A", "C")), new HashSet<String>(list));
     }
 
+    @Test
+    public void shouldRespondToPermissions2() throws BadInputException, IOException {
+        String ids = "A,DOC1 DOC2 DOC3 DOC4 DOC5 DOC6 DOC7";
+        Response response =  service.permissions(ids, db);
+        List list = objectMapper.readValue((String) response.getEntity(), List.class);
+        assertEquals(new HashSet<String>(Arrays.asList("DOC1", "DOC2", "DOC3", "DOC4", "DOC5", "DOC7")), new HashSet<String>(list));
+    }
+
     public GraphDatabaseService graphdb() {
         return db;
     }
