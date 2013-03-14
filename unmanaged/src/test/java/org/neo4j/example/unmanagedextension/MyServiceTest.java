@@ -42,25 +42,33 @@ public class MyServiceTest {
             Node personB = createPerson(db, "B");
             Node personC = createPerson(db, "C");
             Node personD = createPerson(db, "D");
-            personA.createRelationshipTo(personB, KNOWS);
-            personB.createRelationshipTo(personC, KNOWS);
-            personC.createRelationshipTo(personD, KNOWS);
             Node doc1 = createDocument(db, "DOC1");
             Node doc2 = createDocument(db, "DOC2");
             Node doc3 = createDocument(db, "DOC3");
-            Relationship sec1 = createPermission(db, personA, doc1, "true", "true");
-            Relationship sec2 = createPermission(db, personA, doc3, "true", "true");
-            Node g1 = createGroup(db, "G1");
-            personA.createRelationshipTo(g1, IS_MEMBER_OF);
-            Relationship sec3 = createPermission(db, g1, doc2, "true", "true");
-
             Node doc4 = createDocument(db, "DOC4");
-            doc1.createRelationshipTo(doc4, HAS_CHILD_CONTENT);
             Node doc5 = createDocument(db, "DOC5");
-            doc2.createRelationshipTo(doc5, HAS_CHILD_CONTENT);
             Node doc6 = createDocument(db, "DOC6");
             Node doc7 = createDocument(db, "DOC7");
+            Node g1 = createGroup(db, "G1");
+            Node g2 = createGroup(db, "G2");
+
+            personA.createRelationshipTo(personB, KNOWS);
+            personB.createRelationshipTo(personC, KNOWS);
+            personC.createRelationshipTo(personD, KNOWS);
+
+            personA.createRelationshipTo(g1, IS_MEMBER_OF);
+            personB.createRelationshipTo(g2, IS_MEMBER_OF);
+
+            doc1.createRelationshipTo(doc4, HAS_CHILD_CONTENT);
+            doc2.createRelationshipTo(doc5, HAS_CHILD_CONTENT);
             doc5.createRelationshipTo(doc7, HAS_CHILD_CONTENT);
+
+            Relationship secA1 = createPermission(personA, doc1, "R");
+            Relationship secA3 = createPermission(personA, doc3, "RW");
+            Relationship secB4 = createPermission(personB, doc4, "R");
+            Relationship secG2 = createPermission(g1, doc2, "R");
+            Relationship secG6 = createPermission(g2, doc6, "R");
+
             tx.success();
         }
         finally
@@ -69,11 +77,11 @@ public class MyServiceTest {
         }
     }
 
-    private Node createPerson(GraphDatabaseService db, String name) {
-        Index<Node> people = db.index().forNodes("people");
+    private Node createPerson(GraphDatabaseService db, String uid) {
+        Index<Node> people = db.index().forNodes("Users");
         Node node = db.createNode();
-        node.setProperty("name", name);
-        people.add(node, "name", name);
+        node.setProperty("Uid", uid);
+        people.add(node, "Uid", uid);
         return node;
     }
 
@@ -85,10 +93,9 @@ public class MyServiceTest {
         return node;
     }
 
-    private Relationship createPermission(GraphDatabaseService db, Node person, Node doc, String see, String read) {
+    private Relationship createPermission(Node person, Node doc, String permission) {
         Relationship sec = person.createRelationshipTo(doc,SECURITY);
-        sec.setProperty("See", see);
-        sec.setProperty("Read", read);
+        sec.setProperty("flags", permission);
         return sec;
     }
 
@@ -118,11 +125,19 @@ public class MyServiceTest {
     }
 
     @Test
-    public void shouldRespondToPermissions2() throws BadInputException, IOException {
+    public void shouldRespondToPermissions() throws BadInputException, IOException {
         String ids = "A,DOC1 DOC2 DOC3 DOC4 DOC5 DOC6 DOC7";
         Response response =  service.permissions(ids, db);
         List list = objectMapper.readValue((String) response.getEntity(), List.class);
         assertEquals(new HashSet<String>(Arrays.asList("DOC1", "DOC2", "DOC3", "DOC4", "DOC5", "DOC7")), new HashSet<String>(list));
+    }
+
+    @Test
+    public void shouldRespondToPermissions2() throws BadInputException, IOException {
+        String ids = "B,DOC1 DOC2 DOC3 DOC4 DOC5 DOC6 DOC7";
+        Response response =  service.permissions(ids, db);
+        List list = objectMapper.readValue((String) response.getEntity(), List.class);
+        assertEquals(new HashSet<String>(Arrays.asList("DOC4", "DOC6")), new HashSet<String>(list));
     }
 
     public GraphDatabaseService graphdb() {
