@@ -62,8 +62,8 @@ public class MyServiceFunctionalTest {
     private Node createPerson(GraphDatabaseService db, String name) {
         Index<Node> people = db.index().forNodes("Users");
         Node node = db.createNode();
-        node.setProperty("name", name);
-        people.add(node, "name", name);
+        node.setProperty("Uid", name);
+        people.add(node, "Uid", name);
         return node;
     }
 
