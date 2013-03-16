@@ -44,7 +44,7 @@ class TestPermissions extends Simulation {
         .body("${userid},${documentids}")
         .header("Content-Type", "application/text")
         .check(status.is(200))
-        .check(regex("[\"][A-Z0-9-]*[\"]")
+        .check(regex("[\"][a-f0-9-]*[\"]")
         .count.is(session => session.getTypedAttribute[Int]("results"))
       ))
       .pause(0 milliseconds, 5 milliseconds)

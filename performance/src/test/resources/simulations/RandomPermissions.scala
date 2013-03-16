@@ -16,16 +16,21 @@ class RandomPermissions extends Simulation {
     .disableFollowRedirect
     .disableWarmUp
     // Uncomment to see Requests
-        .requestInfoExtractor(request => {
-        println(request.getStringData)
-        Nil
-      })
+    //    .requestInfoExtractor(request => {
+    //    println(request.getStringData)
+    //    Nil
+    //  })
     // Uncomment to see Response
-        .responseInfoExtractor(response => {
-        println(response.getResponseBody)
-        Nil
-      })
+    //    .responseInfoExtractor(response => {
+    //    println(response.getResponseBody)
+    //    Nil
+    //  })
     .disableResponseChunksDiscarding
+
+  val writer = {
+    val fos = new java.io.FileOutputStream("src/test/resources/data/test-data.txt", true)
+    new java.io.PrintWriter(fos,true)
+  }
 
   val rnd = new scala.util.Random
   val usersRange   = 1 to 3000
@@ -92,16 +97,9 @@ class RandomPermissions extends Simulation {
     session.setAttribute("user_id", user)
   })
 
-  // Randomly choose a Document from the Nodes that we fetched.
-  val chooseRandomDocument = exec((session) => {
-    val documents:List[String] = session.getTypedAttribute("documents")
-    val doc: String = documents(rnd.nextInt(documents length))
-    session.setAttribute("doc_id", doc)
-  })
-
   val chooseRandomDocuments = exec((session) => {
     val documents:List[String] = session.getTypedAttribute("documents")
-    session.setAttribute("doc_id", documents.take(1000).mkString(" "))
+    session.setAttribute("doc_ids", documents.take(1000).mkString(" "))
   })
 
   val checkPermissions = during(10) {
@@ -109,12 +107,17 @@ class RandomPermissions extends Simulation {
     .exec(
       http("Post Permissions Request")
         .post("/example/service/permissions")
-        .body("${user_id},${doc_id}")
+        .body("${user_id},${doc_ids}")
         .header("Content-Type", "application/text")
         .check(status.is(200))
         .check(regex("[\"][a-f0-9-]*[\"]")
         .exists)
+        .check(regex("[\"][a-f0-9-]*[\"]").count.saveAs("count"))
       )
+    .exec((s: Session) => {
+      writer.println(s.getAttribute("count") + "," + s.getAttribute("user_id") + "," + s.getAttribute("doc_ids"))
+      s
+    })
       .pause(0 milliseconds, 5 milliseconds)
 
   }
