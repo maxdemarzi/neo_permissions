@@ -80,28 +80,28 @@ public class MyServiceTest {
     private Node createPerson(GraphDatabaseService db, String uid) {
         Index<Node> people = db.index().forNodes("Users");
         Node node = db.createNode();
-        node.setProperty("Uid", uid);
-        people.add(node, "Uid", uid);
+        node.setProperty("unique_id", uid);
+        people.add(node, "unique_id", uid);
         return node;
     }
 
     private Node createDocument(GraphDatabaseService db, String uid) {
         Index<Node> documents = db.index().forNodes("Documents");
         Node node = db.createNode();
-        node.setProperty("Uid", uid);
-        documents.add(node, "Uid", uid);
+        node.setProperty("unique_id", uid);
+        documents.add(node, "unique_id", uid);
         return node;
     }
 
     private Relationship createPermission(Node person, Node doc, String permission) {
-        Relationship sec = person.createRelationshipTo(doc,SECURITY);
+        Relationship sec = person.createRelationshipTo(doc, SECURITY);
         sec.setProperty("flags", permission);
         return sec;
     }
 
     private Node createGroup(GraphDatabaseService db, String uid) {
         Node node = db.createNode();
-        node.setProperty("Uid", uid);
+        node.setProperty("unique_id", uid);
         node.setProperty("Type", "SecurityGroup");
         return node;
     }

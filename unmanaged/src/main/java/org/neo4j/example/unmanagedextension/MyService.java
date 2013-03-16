@@ -28,11 +28,11 @@ public class MyService {
     @Path("/friends/{name}")
     public Response getFriends(@PathParam("name") String name, @Context GraphDatabaseService db) throws IOException {
         ExecutionEngine executionEngine = new ExecutionEngine(db);
-        ExecutionResult result = executionEngine.execute("START person=node:Users(Uid={n}) MATCH person-[:KNOWS]-other RETURN other.Uid",
+        ExecutionResult result = executionEngine.execute("START person=node:Users(unique_id={n}) MATCH person-[:KNOWS]-other RETURN other.unique_id",
                 Collections.<String, Object>singletonMap("n", name));
         List<String> friends = new ArrayList<String>();
         for (Map<String, Object> item : result) {
-            friends.add((String) item.get("other.Uid"));
+            friends.add((String) item.get("other.unique_id"));
         }
         return Response.ok().entity(objectMapper.writeValueAsString(friends)).build();
     }
@@ -57,8 +57,8 @@ public class MyService {
         Set<Node> parentNodes = new HashSet<Node>();
         HashMap<Node, ArrayList<Node>> foldersAndDocuments = new HashMap<Node, ArrayList<Node>>();
 
-        IndexHits<Node> uid = db.index().forNodes("Users").get("Uid", ids.userAccountUid);
-        IndexHits<Node> docids = db.index().forNodes("Documents").query("Uid:(" + ids.documentUids + ")");
+        IndexHits<Node> uid = db.index().forNodes("Users").get("unique_id", ids.userAccountUid);
+        IndexHits<Node> docids = db.index().forNodes("Documents").query("unique_id:(" + ids.documentUids + ")");
         try
         {
             for ( Node node : docids )
@@ -91,10 +91,10 @@ public class MyService {
                 if (found != null) {
                     if (foldersAndDocuments.get(found) != null) {
                         for(Node docs : foldersAndDocuments.get(found)) {
-                            documents.add(docs.getProperty("Uid").toString());
+                            documents.add(docs.getProperty("unique_id").toString());
                         }
                     } else {
-                        documents.add(found.getProperty("Uid").toString());
+                        documents.add(found.getProperty("unique_id").toString());
                     }
                 }
 
@@ -104,10 +104,10 @@ public class MyService {
                     if (found != null) {
                         if (foldersAndDocuments.get(found) != null) {
                             for(Node docs : foldersAndDocuments.get(found)) {
-                                documents.add(docs.getProperty("Uid").toString());
+                                documents.add(docs.getProperty("unique_id").toString());
                             }
                         } else {
-                            documents.add(found.getProperty("Uid").toString());
+                            documents.add(found.getProperty("unique_id").toString());
                         }
                     }
                 }

@@ -9,6 +9,7 @@ Generator
 Sample graph data generator for this project.
 
 Run:
+
     bundle install
     rake neo4j:install[enterprise,1.9.M05]
     rake neo4j:create
@@ -22,14 +23,15 @@ Unmanaged Extension to find permissions including unit tests.
 Run:
 
     mvn clean package
-    cp target/unmanaged-extension-template-1.0.jar ..generator/neo4j/plugins/
+    cp target/unmanaged-extension-template-1.0.jar ../generator/neo4j/plugins/
     
 Add to generator/neo4j/conf/neo4j-server.properties:
 
     org.neo4j.server.thirdparty_jaxrs_classes=org.neo4j.example.unmanagedextension=/example
     
-Restart Neo4j 
+Start Neo4j 
 
+    rake neo4j:start
 
 Performance
 -----------

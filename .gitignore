@@ -1,3 +1,5 @@
+generator/neo4j
+*.csv
 *.iml
 .idea
 .DS_Store
