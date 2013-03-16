@@ -1,4 +1,4 @@
-neo_permissions
+Neo Permissions
 ===============
 
 Permission Resolution with Neo4j
@@ -11,6 +11,8 @@ Clone and compile the batch-import project into the same directory which contain
     git clone https://github.com/jexp/batch-import.git
     cd batch-import
     mvn clean compile assembly:single
+
+See http://maxdemarzi.com/?s=batch for walk-through.
 
 Generator
 ---------
