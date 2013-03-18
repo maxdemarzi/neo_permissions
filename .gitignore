@@ -1,3 +1,4 @@
+test-data.txt
 generator/neo4j
 *.csv
 *.iml
