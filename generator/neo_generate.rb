@@ -12,7 +12,6 @@ require 'forgery'
     create_nodes_index
     create_relationship_properties
     create_relationships
-#   create_relationships_index
   end  
 
   def create_node_properties
@@ -58,11 +57,11 @@ require 'forgery'
   end
 
   def user_to_document_values
-    [["R", "RW", "D"].sample]
+    [["R", "RW", "RWX"].sample]
   end
 
   def group_to_document_values
-    [["R", "RW", "D"].sample]
+    [["R", "RW", "RWX"].sample]
   end
 
   def document_to_document_values
@@ -248,7 +247,6 @@ require 'forgery'
   #
   def load_graph
     puts "Running the following:"
-    #command ="java -server -Xmx4G -jar ../batch-import/target/batch-import-jar-with-dependencies.jar neo4j/data/graph.db nodes.csv rels.csv node_index lookupIndex exact nodes_index.csv rel_index edges exact rels_index.csv" 
     command ="java -server -Xmx4G -jar ../../batch-import/target/batch-import-jar-with-dependencies.jar neo4j/data/graph.db nodes.csv rels.csv node_index Users exact users_index.csv node_index Documents exact documents_index.csv" 
     puts command
     exec command    
