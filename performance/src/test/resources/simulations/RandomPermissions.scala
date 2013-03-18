@@ -28,7 +28,7 @@ class RandomPermissions extends Simulation {
     .disableResponseChunksDiscarding
 
   val writer = {
-    val fos = new java.io.FileOutputStream("src/test/resources/data/test-data.txt", true)
+    val fos = new java.io.FileOutputStream("src/test/resources/data/test-data.txt")
     new java.io.PrintWriter(fos,true)
   }
 
@@ -65,9 +65,7 @@ class RandomPermissions extends Simulation {
 
   // Go fetch the documents from the database.
   val fetchSomeDocumentIds = """START doc=node({ids}) RETURN collect(doc.unique_id) as uids"""
-  //val fetchSomeDocumentIds = """START user=node(1) MATCH user -[:SECURITY]-> doc RETURN collect(doc.unique_id) as uids"""
   val documentPostBody = """{"query": "%s", "params": {"ids": %s}}""".format(fetchSomeDocumentIds, JSONArray.apply(documentsForSimulation).toString())
-  //val documentPostBody = """{"query": "%s"}""".format(fetchSomeDocumentIds)
   val documentFetcher = exec(
     http("Get some random documents")
       .post("/db/data/cypher")
@@ -119,14 +117,20 @@ class RandomPermissions extends Simulation {
       s
     })
       .pause(0 milliseconds, 5 milliseconds)
-
   }
+
+  val createFile = scenario("Prepare test-data.txt file").
+      exec((s: Session) => {
+       writer.println("results,userid,documentids")
+       s
+       })
+
   val scn = scenario("Permissions via Unmanaged Extension")
     .exec(userFetcher, documentFetcher, checkPermissions)
 
 
-
   setUp(
+    createFile.users(1),
     scn.users(10).ramp(10).protocolConfig(httpConf)
   )
 }
