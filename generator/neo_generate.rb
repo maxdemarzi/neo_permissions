@@ -14,6 +14,14 @@ require 'forgery'
     create_relationships
   end  
 
+  def create_bigger_graph
+    create_node_properties
+    create_more_nodes
+    create_nodes_index
+    create_relationship_properties
+    create_relationships
+  end  
+
   def create_node_properties
     @node_properties = ["unique_id", "type"]
     generate_node_properties(@node_properties)  
@@ -35,13 +43,28 @@ require 'forgery'
   # Nodes       
   # Users 3000
   # Groups 100
-  # Documents 10M
-  
+  # Documents 1M
+
   def create_nodes    
    @nodes = {
              "user"  => { "start" =>     1, "end"   =>   3000},
              "group" => { "start" =>  3001, "end"   =>   3100},
              "doc"   => { "start" =>  3101, "end"   =>1003100}
+            }
+    
+    @nodes.each{ |node| generate_nodes(node[0], node[1])}
+  end
+
+  # Nodes       
+  # Users 3000
+  # Groups 100
+  # Documents 10M
+  
+  def create_more_nodes    
+   @nodes = {
+             "user"  => { "start" =>     1, "end"   =>    3000},
+             "group" => { "start" =>  3001, "end"   =>    3100},
+             "doc"   => { "start" =>  3101, "end"   =>10003100}
             }
     
     @nodes.each{ |node| generate_nodes(node[0], node[1])}
@@ -247,7 +270,7 @@ require 'forgery'
   #
   def load_graph
     puts "Running the following:"
-    command ="java -server -Xmx4G -jar ../../batch-import/target/batch-import-jar-with-dependencies.jar neo4j/data/graph.db nodes.csv rels.csv node_index Users exact users_index.csv node_index Documents exact documents_index.csv" 
+    command ="java -server -Xmx4G -jar ./batch-import-jar-with-dependencies.jar neo4j/data/graph.db nodes.csv rels.csv node_index Users exact users_index.csv node_index Documents exact documents_index.csv" 
     puts command
     exec command    
   end 

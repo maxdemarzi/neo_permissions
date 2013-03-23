@@ -6,13 +6,16 @@ Permission Resolution with Neo4j
 Pre-Requisites
 --------------
 
-Clone and compile the batch-import project into the same directory which contains neo_permissions.
+Clone and compile the batch-import project:
 
     git clone https://github.com/jexp/batch-import.git
     cd batch-import
     mvn clean compile assembly:single
 
 See http://maxdemarzi.com/?s=batch for walk-through.
+
+...or download [the jar file](https://dl.dropbox.com/u/57740873/batch-import-jar-with-dependencies.jar)  from dropbox and copy jar file into generator directory.
+
 
 Generator
 ---------

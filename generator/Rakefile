@@ -6,6 +6,11 @@ namespace :neo4j do
     %x[rm *.csv]
     create_graph
   end
+
+  task :create_bigger do
+    %x[rm *.csv]
+    create_bigger_graph
+  end
   
   task :load do
     %x[rm -rf neo4j/data/graph.db]
