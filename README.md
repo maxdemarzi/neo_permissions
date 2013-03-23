@@ -14,7 +14,7 @@ Clone and compile the batch-import project:
 
 See http://maxdemarzi.com/?s=batch for walk-through.
 
-...or download [the jar file](https://dl.dropbox.com/u/57740873/batch-import-jar-with-dependencies.jar)  from dropbox and copy jar file into generator directory.
+...or download [the jar file](https://dl.dropbox.com/u/57740873/batch-import-jar-with-dependencies.jar) from dropbox and copy it into generator directory.
 
 
 Generator
@@ -26,7 +26,7 @@ Run:
 
     bundle install
     rake neo4j:install[enterprise,1.9.M05]
-    rake neo4j:create
+    rake neo4j:create (or rake neo4j:create_bigger)
     rake neo4j:load
 
 Unmanaged
