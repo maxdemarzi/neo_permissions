@@ -37,7 +37,7 @@ class TestPermissions extends Simulation {
 
   val scn = scenario("Permissions via Unmanaged Extension")
     .feed(testfile)
-    .during(10) {
+    .during(30) {
     exec(
       http("Post Permissions Request")
         .post("/example/service/permissions")
