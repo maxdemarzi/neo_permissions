@@ -71,9 +71,10 @@ public class MyService {
             docids.close();
         }
 
-        if ( uid.size() > 0 && documentNodes.size() > 0)
+        Node user = uid.getSingle();
+        
+        if ( user != null && documentNodes.size() > 0)
         {
-            Node user = uid.getSingle();
             for ( Relationship relationship : user.getRelationships(
                     RelTypes.IS_MEMBER_OF, Direction.OUTGOING ) )
             {
